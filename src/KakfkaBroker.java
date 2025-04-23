@@ -25,52 +25,44 @@ public class KakfkaBroker {
     }
     public void publish(Message message, String topicName, String partitionId) {
         System.out.println("Publishing message to topic " + topicName);
-        for (Topic topic : topics) {
-            if (topic.getName().equals(topicName)) {
-                topic.publish(message, partitionId);
-                return;
-            }
-        }
-        System.out.println("Topic not found");
+        topics.stream()
+            .filter(topic -> topic.getName().equals(topicName))
+            .findFirst()
+            .ifPresentOrElse(
+                topic -> topic.publish(message, partitionId),
+                () -> System.out.println("Topic not found")
+            );
     }
-    public void addSubscriber(String topicName, String partitionId, Subscriber subscriber) {
-        System.out.println("Adding subscriber " + subscriber.getName() + " to topic " + topicName);
-        for (Topic topic : topics) {
-            if (topic.getName().equals(topicName)) {
-                topic.addSubscriber(partitionId, subscriber);
-                return;
-            }
-        }
-        System.out.println("Topic not found");
-    }
-    public void removeSubscriber(String topicName, String partitionId, Subscriber subscriber) {
-        System.out.println("Removing subscriber " + subscriber.getName() + " from topic " + topicName);
-        for (Topic topic : topics) {
-            if (topic.getName().equals(topicName)) {
-                topic.removeSubscriber(partitionId, subscriber);
-                return;
-            }
-        }
-        System.out.println("Topic not found");
-    }
+
     public void addPartition(String topicName, Partition partition) {
         System.out.println("Adding partition " + partition.getId() + " to topic " + topicName);
-        for (Topic topic : topics) {
-            if (topic.getName().equals(topicName)) {
-                topic.addPartition(partition);
-                return;
-            }
-        }
-        System.out.println("Topic not found");
+        topics.stream()
+            .filter(topic -> topic.getName().equals(topicName))
+            .findFirst()
+            .ifPresentOrElse(
+                topic -> topic.addPartition(partition),
+                () -> System.out.println("Topic not found")
+            );
     }
     public void removePartition(String topicName, Partition partition) {
         System.out.println("Removing partition " + partition.getId() + " from topic " + topicName);
-        for (Topic topic : topics) {
-            if (topic.getName().equals(topicName)) {
-                topic.removePartition(partition);
-                return;
-            }
-        }
-        System.out.println("Topic not found");
+        topics.stream()
+            .filter(topic -> topic.getName().equals(topicName))
+            .findFirst()
+            .ifPresentOrElse(
+                topic -> topic.removePartition(partition),
+                () -> System.out.println("Topic not found")
+            );
+    }
+
+    public void processMessage(String topicName, String partitionId) {
+        System.out.println("Processing message from topic " + topicName);
+        topics.stream()
+            .filter(topic -> topic.getName().equals(topicName))
+            .findFirst()
+            .ifPresentOrElse(
+                topic -> topic.processMessage(partitionId),
+                () -> System.out.println("Topic not found")
+            );
     }
 }

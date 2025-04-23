@@ -11,8 +11,8 @@ public class DeadLetterQueue {
     }
     public static void processMessages() {
         System.out.println("Processing messages in dead letter queue");
-        for (Message message : messages) {
+        messages.forEach(message -> {
             System.out.println("Processing message: " + message.getContent());
-        }
+        });
     }
 }
